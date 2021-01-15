@@ -14,7 +14,7 @@ var chartMargin = {
 var chartWidth = svgWidth - chartMargin.right - chartMargin.left;
 var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 
-//select body, append SVG area to it, and set the dimensions
+//select id=scatter, append SVG area to it, and set the dimensions
 var svg = d3
     .select("#scatter")
     .append("svg")
@@ -22,6 +22,9 @@ var svg = d3
     .attr("height", chartHeight);
 
 
+// Append a group area, shift svg area by left and top margins
+var chartGroup = svg.append("g")
+    .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`)
 
 
 //load data from csv file
@@ -30,7 +33,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     //print data in console
     console.log(healthData);
 
-    //convert all numerical data from string to integer
+    //convert all numerical data in csv file from string to integer
     healthData.forEach(function(data) {
         data.id = +data.id;
         data.poverty = +data.poverty;
@@ -49,6 +52,22 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
         data.smokesLow = +data.smokesLow;
         data.smokesHigh = +data.smokesHigh;
     });
+
+    //create scale functions
+    var xLinearScale = d3.scaleLinear()
+    .domain([20, d3.max(healthData, d => d.poverty)])
+    .range([0, chartWidth]);
+
+    var yLinearScale = d3.scaleLinear()
+    .domain([0, d3.max(healthData, d => d.healthcare)])
+    .range([chartHeight, 0]);
+
+    //create axis functions
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
+
+    //append axes to chart
+    
 
 });
 
