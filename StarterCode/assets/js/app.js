@@ -18,10 +18,10 @@ function makeResponsive() {
 
     //define chart's margins
     var chartMargin = {
-        top: 30,
-        bottom: 30,
-        right: 30,
-        left: 30
+        top: 75,
+        bottom: 100,
+        right: 75,
+        left: 50
     };
 
     //define dimensions of the chart area
@@ -116,7 +116,7 @@ function makeResponsive() {
         circlesGroup.on("mouseover", function(data) {
             toolTip.show(data, this);
             })
-        // onmouseout event
+        // on mouseout event
             .on("mouseout", function(data) {
                 toolTip.hide(data);
         });
@@ -125,13 +125,13 @@ function makeResponsive() {
         chartGroup.append("text")
             .attr("transform","rotate(-90)")
             .attr("y", 0 - chartMargin.left)
-            .attr("x", 0 - (chartHeight / 2))
+            .attr("x", 0 - (chartHeight / 2) - 40)
             .attr("dy", "1em")
             .attr("class", "axisText")
             .text("Lacks Healthcare %");
 
         chartGroup.append("text")
-            .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + chartMargin.top + 30})`)
+            .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + chartMargin.top - 20})`)
             .attr("class", "axisText")
             .text("In Poverty %");
     
