@@ -1,20 +1,22 @@
-//define SVG area
-// var svgWidth = 960;
-// var svgHeight = 600;
-
+//create function that will make svg area responsive to window size changes
 function makeResponsive() {
 
+    //set variable that selects svg area
     var svgArea = d3.select("body").select("svg");
 
+    // if the SVG area isn't empty when the browser loads,
+    // remove it and replace it with a resized version of the chart
     if (!svgArea.empty()) {
         svgArea.remove();
       }
 
-    var svgWidth = 960;
-    var svgHeight = 600;
+    
+    //svg parameters
+    var svgWidth = window.innerWidth - 200;
+    var svgHeight = window.innerHeight;
 
 
-//define chart's margins
+    //define chart's margins
     var chartMargin = {
         top: 30,
         bottom: 30,
@@ -22,11 +24,11 @@ function makeResponsive() {
         left: 30
     };
 
-//define dimensions of the chart area
+    //define dimensions of the chart area
     var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
     var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 
-//select id=scatter, append SVG area to it, and set the dimensions
+    //select id=scatter, append SVG area to it, and set the dimensions
     var svg = d3
         .select("#scatter")
         .append("svg")
@@ -34,12 +36,12 @@ function makeResponsive() {
         .attr("height", svgHeight);
 
 
-// Append a group area, shift svg area by left and top margins
+    //append a group area, shift svg area by left and top margins
     var chartGroup = svg.append("g")
         .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`)
 
 
-//load data from csv file
+    //load data from csv file
     d3.csv("assets/data/data.csv").then(function(healthData) {
 
     //print data in console
@@ -65,7 +67,7 @@ function makeResponsive() {
             data.smokesHigh = +data.smokesHigh;
         });
 
-    //create scale functions
+        //create scale functions
         var xLinearScale = d3.scaleLinear()
         .domain([10, d3.max(healthData, d => d.poverty)])
         .range([0, chartWidth]);
@@ -74,11 +76,11 @@ function makeResponsive() {
         .domain([0, d3.max(healthData, d => d.healthcare)])
         .range([chartHeight, 0]);
 
-    //create axis functions
+        //create axis functions
         var bottomAxis = d3.axisBottom(xLinearScale);
         var leftAxis = d3.axisLeft(yLinearScale);
 
-    //append axes to chart
+        //append axes to chart
         chartGroup.append("g")
         .attr("transform", `translate(0, ${chartHeight})`)
         .call(bottomAxis);
@@ -87,7 +89,7 @@ function makeResponsive() {
         .call(leftAxis);
 
 
-    //create circles
+        //create circles
         var circlesGroup = chartGroup.selectAll("circle")
             .data(healthData)
             .enter()
@@ -99,7 +101,7 @@ function makeResponsive() {
             .attr("opacity", ".5");
 
 
-    //initialize tooltip
+        //initialize tooltip
         var toolTip = d3.tip()
             .attr("class", "tooltip")
             .offset([80, -60])
@@ -107,10 +109,10 @@ function makeResponsive() {
                 return (`${d.state}<br>Poverty: ${d.poverty}%<br>Lacks Healthcare: ${d.healthcare}%`)
             });
 
-    //create tooltip in chart
+        //create tooltip in chart
         chartGroup.call(toolTip);
 
-    //create event listeners to display and hide the tooltip
+        //create event listeners to display and hide the tooltip
         circlesGroup.on("mouseover", function(data) {
             toolTip.show(data, this);
             })
@@ -119,7 +121,7 @@ function makeResponsive() {
                 toolTip.hide(data);
         });
 
-    //create axes labels
+        //create axes labels
         chartGroup.append("text")
             .attr("transform","rotate(-90)")
             .attr("y", 0 - chartMargin.left)
@@ -136,6 +138,8 @@ function makeResponsive() {
     });
 }
 
+//call makeResponsize function when browser opens
 makeResponsive();
 
+//call makeResponsize function when broswer resized
 d3.select(window).on("resize", makeResponsive);
