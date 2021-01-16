@@ -99,7 +99,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     chartGroup.call(toolTip);
 
     //create event listeners to display and hide the tooltip
-    circlesGroup.on("click", function(data) {
+    circlesGroup.on("mouseover", function(data) {
         toolTip.show(data, this);
         })
         // onmouseout event
@@ -119,7 +119,8 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     chartGroup.append("text")
         .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + chartMargin.top + 30})`)
         .attr("class", "axisText")
-        .text("In Poverty %")
+        .text("In Poverty %");
+
 
     
 
