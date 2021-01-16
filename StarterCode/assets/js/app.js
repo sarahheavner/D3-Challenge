@@ -1,6 +1,6 @@
 //define SVG area
-var svgWidth = 600;
-var svgHeight = 400;
+var svgWidth = 960;
+var svgHeight = 500;
 
 //define chart's margins
 var chartMargin = {
@@ -11,15 +11,15 @@ var chartMargin = {
 };
 
 //define dimensions of the chart area
-var chartWidth = svgWidth - chartMargin.right - chartMargin.left;
+var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
 var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 
 //select id=scatter, append SVG area to it, and set the dimensions
 var svg = d3
     .select("#scatter")
     .append("svg")
-    .attr("width", chartWidth)
-    .attr("height", chartHeight);
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
 
 
 // Append a group area, shift svg area by left and top margins
@@ -55,7 +55,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
 
     //create scale functions
     var xLinearScale = d3.scaleLinear()
-    .domain([20, d3.max(healthData, d => d.poverty)])
+    .domain([0, d3.max(healthData, d => d.poverty)])
     .range([0, chartWidth]);
 
     var yLinearScale = d3.scaleLinear()
@@ -67,7 +67,28 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     var leftAxis = d3.axisLeft(yLinearScale);
 
     //append axes to chart
+    chartGroup.append("g")
+    .attr("transform", `translate(0, ${chartHeight})`)
+    .call(bottomAxis);
+
+    chartGroup.append("g")
+    .call(leftAxis);
+
+
+    //create circles
+    var circlesGroup = chartGroup.selectAll("circle")
+        .data(healthData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xLinearScale(d.poverty))
+        .attr("cy", d => yLinearScale(d.healthcare))
+        .attr("r", "15")
+        .attr("fill", "blue")
+        .attr("opacity", ".5");
+
     
+    
+
 
 });
 
