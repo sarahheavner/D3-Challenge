@@ -19,8 +19,8 @@ function makeResponsive() {
     //define chart's margins
     var chartMargin = {
         top: 75,
-        bottom: 100,
-        right: 75,
+        bottom: 75,
+        right: 50,
         left: 50
     };
 
@@ -69,7 +69,7 @@ function makeResponsive() {
 
         //create scale functions
         var xLinearScale = d3.scaleLinear()
-        .domain([10, d3.max(healthData, d => d.poverty)])
+        .domain([6, d3.max(healthData, d => d.poverty)])
         .range([0, chartWidth]);
 
         var yLinearScale = d3.scaleLinear()
@@ -89,22 +89,37 @@ function makeResponsive() {
         .call(leftAxis);
 
 
-        //create circles
+        //create circles for scatter plot
         var circlesGroup = chartGroup.selectAll("circle")
             .data(healthData)
             .enter()
             .append("circle")
             .attr("cx", d => xLinearScale(d.poverty))
             .attr("cy", d => yLinearScale(d.healthcare))
-            .attr("r", "10")
+            .attr("r", "15")
             .attr("fill", "blue")
             .attr("opacity", ".5");
+
+        //add state abbreviations to circles
+        var textGroup = chartGroup.selectAll("text")
+            .data(healthData)
+            .enter()
+            .append("text")
+            .attr("x", d => xLinearScale(d.poverty))
+            .attr("y", d => yLinearScale(d.healthcare))
+            .text(d => d.abbr)
+            .attr("font-family", "sans-serif")
+            .attr("text-anchor", "middle")
+            .attr("fill", "white")
+            .attr("font-size", "10px")
+            .style("font-weight", "bold")
+            .attr("alignment-baseline", "central");
 
 
         //initialize tooltip
         var toolTip = d3.tip()
             .attr("class", "tooltip")
-            .offset([80, -60])
+            .offset([0, -60])
             .html(function(d) {
                 return (`${d.state}<br>Poverty: ${d.poverty}%<br>Lacks Healthcare: ${d.healthcare}%`)
             });
