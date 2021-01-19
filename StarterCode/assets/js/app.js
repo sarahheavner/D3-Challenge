@@ -98,22 +98,26 @@ function makeResponsive() {
             .attr("cy", d => yLinearScale(d.healthcare))
             .attr("r", "15")
             .attr("fill", "blue")
-            .attr("opacity", ".5");
+            .attr("opacity", ".5")
+            .attr("class", "circles");
 
         //add state abbreviations to circles
         var textGroup = chartGroup.selectAll("text")
             .data(healthData)
             .enter()
             .append("text")
+            .text(d => (d.abbr))
             .attr("x", d => xLinearScale(d.poverty))
             .attr("y", d => yLinearScale(d.healthcare))
-            .text(d => d.abbr)
             .attr("font-family", "sans-serif")
             .attr("text-anchor", "middle")
             .attr("fill", "white")
             .attr("font-size", "10px")
             .style("font-weight", "bold")
-            .attr("alignment-baseline", "central");
+            .attr("alignment-baseline", "central")
+            .attr("class", "stateAbbr");
+
+            
 
 
         //initialize tooltip
