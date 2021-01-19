@@ -5,10 +5,10 @@ var svgHeight = 500;
 
 //define chart's margins
 var chartMargin = {
-    top: 75,
-    bottom: 75,
+    top: 100,
+    bottom: 100,
     right: 50,
-    left: 50
+    left: 75    
 };
 
 //define dimensions of the chart area
@@ -50,7 +50,7 @@ function yScale(healthData, chosenYAxis) {
         .domain([d3.min(healthData, d => d[chosenYAxis]),
            d3.max(healthData, d => d[chosenYAxis])
         ])
-        .range([0, chartHeight]);
+        .range([chartHeight, 0]);
     
     return yLinearScale;
 }
@@ -161,6 +161,110 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
         data.obesity = +data.obesity;
         data.smokes = +data.smokes;
         });
+    
+    // x and y LinearScales
+    var xLinearScale = xScale(healthData, chosenXAxis);
+    var yLinearScale = yScale(healthData, chosenYAxis);
+
+    // Create initial axis functions
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
+
+    // append x and y axis
+    var xAxis = chartGroup.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${chartHeight})`)
+        .call(bottomAxis);
+
+    var yAxis = chartGroup.append("g")
+        .attr("class", "y-axis")
+        .call(leftAxis);
+
+    //create circles for scatter plot
+    var circlesGroup = chartGroup.selectAll("circle")
+    .data(healthData)
+    .enter()
+    .append("circle")
+    .attr("cx", d => xLinearScale(d.poverty))
+    .attr("cy", d => yLinearScale(d.healthcare))
+    .attr("r", "15")
+    .attr("fill", "blue")
+    .attr("opacity", ".5")
+    .attr("class", "circles");
+
+
+    //add state abbreviations to circles
+    var textGroup = chartGroup.selectAll("text")
+    .data(healthData)
+    .enter()
+    .append("text")
+    .text(d => (d.abbr))
+    .attr("x", d => xLinearScale(d.poverty))
+    .attr("y", d => yLinearScale(d.healthcare))
+    .attr("font-family", "sans-serif")
+    .attr("text-anchor", "middle")
+    .attr("fill", "white")
+    .attr("font-size", "10px")
+    .style("font-weight", "bold")
+    .attr("alignment-baseline", "central")
+    .attr("class", "stateAbbr");
+    
+
+    // Create group for 3 x-axis labels
+    var xlabelsGroup = chartGroup.append("g")
+        .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
+
+    var povertyLabel = xlabelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 20)
+        .attr("value", "poverty") // value to grab for event listener
+        .classed("active", true)
+        .text("Poverty %");
+
+    var ageLabel = xlabelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 40)
+        .attr("value", "age") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Age (Median");
+
+    var incomeLabel = xlabelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 60)
+        .attr("value", "income") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Income (Median)");
+
+    //Create group for 3 y-axis labels
+    var ylabelsGroup = chartGroup.append("g");
+
+    var healthcareLabel = ylabelsGroup.append("text")
+        .attr("transform","rotate(-90)")
+        .attr("y", 0 - 20)
+        .attr("x", 0 - (chartHeight / 2))
+        .attr("value", "poverty") // value to grab for event listener
+        .classed("active", true)
+        .text("Lacks Healthcare (%)");
+
+    var smokesLabel = ylabelsGroup.append("text")
+        .attr("transform","rotate(-90)")
+        .attr("y", 0 - 40)
+        .attr("x", 0 - (chartHeight / 2))
+        .attr("value", "smokes") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Smokes (%)");
+
+    var obesityLabel = ylabelsGroup.append("text")
+        .attr("transform","rotate(-90)")
+        .attr("y", 0 - 60)
+        .attr("x", 0 - (chartHeight / 2))
+        .attr("value", "obesity") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Obesity (%)");
+
+
+    
+
     
 
 
