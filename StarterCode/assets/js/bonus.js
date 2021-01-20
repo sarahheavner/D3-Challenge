@@ -136,7 +136,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     circlesGroup.call(toolTip);
 
     circlesGroup.on("mouseover", function(data) {
-    toolTip.show(data);
+    toolTip.show(data, this);
     })
     // onmouseout event
     .on("mouseout", function(data, index) {
@@ -147,7 +147,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 }
 
 //load data from csv file
-d3.csv("assets/data/data.csv").then(function(healthData) {
+d3.csv("assets/data/data.csv").then(function(healthData, err) {
+    if (err) throw err;
 
     //print data in console
     console.log(healthData);
@@ -187,7 +188,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d[chosenYAxis]))
-    .attr("r", "10")
+    .attr("r", "15")
     .attr("fill", "blue")
     .attr("opacity", ".5")
     .attr("class", "circles");
@@ -219,7 +220,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
         .attr("y", 20)
         .attr("value", "poverty") // value to grab for event listener
         .classed("active", true)
-        .text("Poverty %");
+        .text("Poverty (%)");
 
     var ageLabel = xlabelsGroup.append("text")
         .attr("x", 0)
@@ -263,7 +264,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
         .text("Obesity (%)");
 
     // updateToolTip function above csv import
-    var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+    var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, circlesGroup);
 
     // x axis labels event listener
     xlabelsGroup.selectAll("text")
@@ -282,10 +283,11 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
       // updates x axis with transition
       xAxis = renderXAxis(xLinearScale, xAxis); 
       // updates circles with new x values
-      circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+      circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+      circlesAbbrGroup = renderStateText(circlesAbbrGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis )
 
       // updates tooltips with new info
-      circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+      circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, circlesAbbrGroup);
 
       // changes classes to change bold text
       if (chosenXAxis === "poverty") {
@@ -343,10 +345,11 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     // updates x axis with transition
     yAxis = renderYAxis(yLinearScale, yAxis); 
     // updates circles with new x values
-    circlesGroup = renderCircles(circlesGroup, yLinearScale, chosenYAxis);
+    circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+    circlesAbbrGroup = renderStateText(circlesAbbrGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
     // updates tooltips with new info
-    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup,circlesAbbrGroup);
 
     // changes classes to change bold text
     if (chosenYAxis === "healthcare") {
@@ -381,8 +384,8 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
         obesityLabel 
             .classed("active", true)
             .classed("inactive", false);
-        }
-        }
+    }
+    }
 }); 
 
 });

@@ -134,11 +134,13 @@ function makeResponsive() {
         //create event listeners to display and hide the tooltip
         circlesGroup.on("mouseover", function(data) {
             toolTip.show(data, this);
-            })
+        })
         // on mouseout event
-            .on("mouseout", function(data) {
+            .on("mouseout", function(data, index) {
                 toolTip.hide(data);
-        });
+            });
+
+
 
         //create axes labels
         chartGroup.append("text")
