@@ -227,7 +227,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
         .attr("y", 40)
         .attr("value", "age") // value to grab for event listener
         .classed("inactive", true)
-        .text("Age (Median");
+        .text("Age (Median)");
 
     var incomeLabel = xlabelsGroup.append("text")
         .attr("x", 0)
@@ -332,59 +332,59 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     ylabelsGroup.selectAll("text")
         .on("click", function() {
     // get value of selection
-        var value = d3.select(this).attr("value");
-        if (value !== chosenYAxis) {
+    var value = d3.select(this).attr("value");
+    if (value !== chosenYAxis) {
 
-    // replaces chosenXAxis with value
-    chosenYAxis = value;
+        // replaces chosenXAxis with value
+        chosenYAxis = value;
 
-    // functions here found above csv import
-    // updates x scale for new data
-    yLinearScale = yScale(healthData, chosenYAxis);
+        // functions here found above csv import
+        // updates x scale for new data
+        yLinearScale = yScale(healthData, chosenYAxis);
 
-    // updates x axis with transition
-    yAxis = renderYAxis(yLinearScale, yAxis); 
-    // updates circles with new x values
-    circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
-    circlesAbbrGroup = renderStateText(circlesAbbrGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+        // updates x axis with transition
+        yAxis = renderYAxis(yLinearScale, yAxis); 
+        // updates circles with new y values
+        circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+        circlesAbbrGroup = renderStateText(circlesAbbrGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
-    // updates tooltips with new info
-    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup,circlesAbbrGroup);
+        // updates tooltips with new info
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup,circlesAbbrGroup);
 
-    // changes classes to change bold text
-    if (chosenYAxis === "healthcare") {
-        healthcareLabel
-            .classed("active", true)
-            .classed("inactive", false);
-        smokesLabel
-            .classed("active", false)
-            .classed("inactive", true);
-        obesityLabel 
-            .classed("active", false)
-            .classed("inactive", true);
-    }
-    else if (chosenYAxis === "smokes") {
-        healthcareLabel
-            .classed("active", false)
-            .classed("inactive", true);
-        smokesLabel
-            .classed("active", true)
-            .classed("inactive", false);
-        obesityLabel 
-            .classed("active", false)
-            .classed("inactive", true);
-    }
-    else {
-        healthcareLabel
-            .classed("active", false)
-            .classed("inactive", true);
-        smokesLabel
-            .classed("active", false)
-            .classed("inactive", true);
-        obesityLabel 
-            .classed("active", true)
-            .classed("inactive", false);
-    }
+        // changes classes to change bold text
+        if (chosenYAxis === "healthcare") {
+            healthcareLabel
+                .classed("active", true)
+                .classed("inactive", false);
+            smokesLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            obesityLabel 
+                .classed("active", false)
+                .classed("inactive", true);
+        }
+        else if (chosenYAxis === "smokes") {
+            healthcareLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            smokesLabel
+                .classed("active", true)
+                .classed("inactive", false);
+            obesityLabel 
+                .classed("active", false)
+                .classed("inactive", true);
+        }
+        else {
+            healthcareLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            smokesLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            obesityLabel 
+                .classed("active", true)
+                .classed("inactive", false);
+        }
     }
 }); 
 
